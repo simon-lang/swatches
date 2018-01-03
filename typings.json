@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "jest": "registry:dt/jest#19.2.0+20170312200138",
+    "material-ui": "registry:dt/material-ui#0.16.0+20170323194905"
+  }
+}
