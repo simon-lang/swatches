@@ -1,3 +1,5 @@
+import './swatch.scss'
+
 const component = {
     controller: 'SwatchController as $ctrl',
     template: require('./swatch.html')

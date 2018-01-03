@@ -4,13 +4,25 @@
         ng-change="$ctrl.changeColour()"
         class="swatch-selector"
     ></select>
-    <span>Scale: {{$ctrl.scale}}</span>
+
+    <div
+        class="box"
+        ng-repeat="name in $ctrl.options"
+        ng-style="hover ? $ctrl.dark(name) : $ctrl.light(name)"
+        ng-mouseenter="hover = true"
+        ng-mouseleave="hover = false"
+        ng-click="$ctrl.option = name; $ctrl.changeColour()"
+    ></div>
+
     <div ng-repeat="(k, v) in $ctrl.data">
         <div ng-if="$root.isArray(v)">
+            <span class="pull-right">{{$ctrl.option}} {{$ctrl.scale}}</span>
             <h3>{{::k}}</h3>
-            <div ng-repeat="shade in v" ng-style="$ctrl.style(shade)" class="swatch-item">
-                {{::shade.name}}
-                <div class="pull-right">{{::shade.hex}}</div>
+            <div class="swatch-panel">
+                <div ng-repeat="shade in v" ng-style="$ctrl.style(shade)" class="swatch-item">
+                    {{::shade.name}}
+                    <div class="pull-right">{{::shade.hex}}</div>
+                </div>
             </div>
         </div>
     </div>

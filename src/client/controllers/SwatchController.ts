@@ -16,8 +16,43 @@ class SwatchController {
         this.$q = $q
         this.service = SwatchService
         this.option = $attrs.colour || 'red'
-        this.options = ['red', 'blue', 'fuchsia', 'cyan', 'green']
+        // Object.keys(materialColours).map(d => d.slice())
+        let optionMap = {}
+        Object.keys(materialColours).forEach(colour => {
+            const index = colour.search(/[0-9|A]/)
+            if (index >= 0) {
+                const k = colour.slice(0, index)
+                optionMap[k] = true // deduping
+            }
+        })
+        this.options = Object.keys(optionMap) // ['red', 'blue', 'fuchsia', 'cyan', 'green']
+
         this.changeColour()
+    }
+    light(name) {
+        const scale = materialColourScale(name)
+        const shades = scale.shades
+        return {
+            background: shades ? shades[1].hex : 'black'
+            // borderColor: 'transparent'
+        }
+    }
+    dark(name) {
+        const scale = materialColourScale(name)
+        const shades = scale.shades
+        return {
+            background: shades ? shades[2].hex : 'black',
+            borderColor: shades ? shades[4].hex : 'rgba(0,0,0,0.1)'
+        }
+    }
+    fallback(name) {
+        if (materialColours[name + '50']) {
+            this.data = materialColourScale(name)
+            this.scale = 'supplied by Material UI'
+        } else {
+            this.data = linearColourScale(name)
+            this.scale = 'filled with Linear interpolation'
+        }
     }
     changeColour() {
         const name = this.option
@@ -26,15 +61,14 @@ class SwatchController {
         this.$q.when(promise).then(data => {
             if (data[0]) {
                 this.data = data[0]
-                this.scale = 'Supplied by API'
-            } else if (materialColours[name + '50']) {
-                this.data = materialColourScale(name)
-                this.scale = 'Supplied by Material UI'
+                this.scale = 'supplied by API'
             } else {
-                this.data = linearColourScale(name)
-                this.scale = 'Filled with Linear interpolation'
+                this.fallback(name)
             }
         })
+        .catch(function (err) {
+            this.fallback(name)
+        });
     }
     style(item) {
         const nameValue = item.name.match(/\d+/g)[0]
