@@ -66,9 +66,9 @@ class SwatchController {
                 this.fallback(name)
             }
         })
-        .catch(function (err) {
+        .catch(err => {
             this.fallback(name)
-        });
+        })
     }
     style(item) {
         const nameValue = item.name.match(/\d+/g)[0]
